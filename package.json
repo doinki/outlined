@@ -55,6 +55,17 @@
       "esbuild": "0.24.0"
     }
   },
+  "author": {
+    "email": "doinki94@gmail.com",
+    "name": "doinki",
+    "url": "https://github.com/doinki"
+  },
+  "bugs": "https://github.com/doinki/outlined/issues",
+  "homepage": "https://github.com/doinki/outlined#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doinki/outlined.git"
+  },
   "publishConfig": {
     "access": "public"
   }
