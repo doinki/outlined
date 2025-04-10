@@ -1,4 +1,6 @@
-import React, { forwardRef } from 'react';
+'use client';
+
+import React, { forwardRef, useCallback, useEffect } from 'react';
 
 export interface OutlinedRootProps
   extends React.HTMLAttributes<HTMLDivElement> {}
@@ -73,17 +75,50 @@ export const OutlinedStyle = forwardRef<
 
 export const Outlined = forwardRef<HTMLDivElement, OutlinedRootProps>(
   (props, ref) => {
-    const [checked, setChecked] = React.useState(false);
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setChecked(e.target.checked);
-    };
+    const [value, setValue] = React.useState(false);
+
+    const handleToggle = useCallback(() => {
+      setValue((prevValue) => {
+        const newValue = !prevValue;
+
+        try {
+          localStorage.setItem('outlined', String(newValue));
+        } catch (error) {
+          //
+        }
+
+        return newValue;
+      });
+    }, []);
+
+    useEffect(() => {
+      try {
+        setValue(localStorage.getItem('outlined') === 'true');
+      } catch (error) {
+        //
+      }
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.keyCode === 79 && e.altKey) {
+          e.preventDefault();
+
+          handleToggle();
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }, [handleToggle]);
 
     return (
       <OutlinedRoot ref={ref} {...props}>
         <OutlinedLabel>
-          <OutlinedCheckbox checked={checked} onChange={handleChange} />
+          <OutlinedCheckbox checked={value} onChange={handleToggle} />
         </OutlinedLabel>
-        {checked && <OutlinedStyle />}
+        {value && <OutlinedStyle />}
       </OutlinedRoot>
     );
   },
